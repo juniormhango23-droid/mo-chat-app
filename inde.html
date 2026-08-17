@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mo Chat</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+  <!-- LANDING PAGE -->
+  <div id="landingPage" class="landing">
+    <div class="landing-nav">
+      <div class="logo">Mo<span style="color:var(--primary-blue)">Chat</span></div>
+      <button class="btn-outline" onclick="showAuth()">Login</button>
+    </div>
+    <div class="landing-hero">
+      <div class="landing-text">
+        <h1>Connect With Friends <br> Instantly</h1>
+        <p>Fast, Private, and Free Chat for Everyone. Chats, Calls, and More.</p>
+        <button class="btn-primary btn-big" onclick="showAuth()">Get Started</button>
+      </div>
+    </div>
+
+    <!-- NEW: README SECTION -->
+    <div class="landing-readme">
+      <h2>About MoChat</h2>
+      <div id="readmeContent">Loading README...</div>
+    </div>
+
+    <div class="landing-footer">© 2026 MoChat. All rights reserved.</div>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="login-body" style="display:none">
+    <button class="back-btn" onclick="showLanding()"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    <div class="login-container">
+      <div class="login-header">
+        <div class="logo-circle"><i class="fa-solid fa-comments"></i></div>
+        <h1>Mo<span style="color:var(--primary-blue)">Chat</span></h1>
+        <p>Connect with friends and family</p>
+      </div>
+
+      <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+        <h2>Welcome Back</h2>
+        <div class="form-group">
+          <label>Phone or Email</label>
+          <div class="input-icon"><i class="fa-solid fa-user"></i><input type="text" id="loginUser" placeholder="Enter phone or email" required></div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-icon"><i class="fa-solid fa-lock"></i><input type="password" id="loginPass" placeholder="Enter password" required></div>
+        </div>
+        <button class="btn-primary btn-login" type="submit">Login</button>
+        <p class="signup-text">Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+      </form>
+
+      <form class="login-form" id="signupForm" style="display:none" onsubmit="handleSignup(event)">
+        <h2>Create Account</h2>
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-icon"><i class="fa-solid fa-user"></i><input type="text" id="signupName" placeholder="Enter full name" required></div>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <div class="input-icon"><i class="fa-solid fa-phone"></i><input type="tel" id="signupPhone" placeholder="+265 99 000 0000" required></div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-icon"><i class="fa-solid fa-lock"></i><input type="password" id="signupPass" placeholder="Create password" required></div>
+        </div>
+        <button class="btn-primary btn-login" type="submit">Sign Up</button>
+        <p class="signup-text">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP - UNCHANGED -->
+  <div id="appScreen" class="app-layout" style="display:none">
+    
+    <nav class="side-nav">
+      <div class="side-logo">Mo<span style="color:var(--primary-blue)">Chat</span></div>
+      <div class="nav-item active" onclick="showPage('chatsPage', this)"><i class="fa-solid fa-comments"></i><span>Chats</span></div>
+      <div class="nav-item" onclick="showPage('contactsPage', this)"><i class="fa-solid fa-user-group"></i><span>Contacts</span></div>
+      <div class="nav-item" onclick="showPage('settingsPage', this)"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+      <div class="nav-item" onclick="showPage('profilePage', this)"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+    </nav>
+
+    <div class="main-area">
+      <div class="top-search">
+        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search chats, contacts..." id="searchInput" onkeyup="search(this.value)"></div>
+      </div>
+
+      <div class="content">
+        <div class="page active" id="chatsPage">
+          <h2>Chats</h2>
+          <div class="tabs"><div class="tab active" onclick="filterChats('all', this)">All</div><div class="tab" onclick="filterChats('groups', this)">Groups</div></div>
+          <div id="chatList"></div>
+        </div>
+
+        <div class="page" id="contactsPage">
+          <h2>Contacts</h2>
+          <button class="invite-btn" onclick="addContact()"><i class="fa-solid fa-user-plus"></i> Add Contact</button>
+          <div id="contactList"></div>
+        </div>
+
+        <!-- SETTINGS PAGE - TABS VERTICAL -->
+        <div class="page" id="settingsPage">
+          <h2>Settings</h2>
+          <div class="settings-layout">
+            <div class="settings-tabs-vertical">
+              <div class="tab active" onclick="showSettingsTab('accSettings', this)">Account</div>
+              <div class="tab" onclick="showSettingsTab('chatSettings', this)">Chat</div>
+              <div class="tab" onclick="showSettingsTab('privacySettings', this)">Privacy</div>
+              <div class="tab" onclick="showSettingsTab('notifSettings', this)">Notifications</div>
+              <div class="tab" onclick="showSettingsTab('langSettings', this)">Language</div>
+              <div class="tab" onclick="showSettingsTab('helpSettings', this)">Help</div>
+            </div>
+
+            <div class="settings-content">
+              <div class="subpage active" id="accSettings">
+                <form class="form-card" onsubmit="saveSettingsAccount(event)">
+                  <div class="form-group"><label>Contact</label><input type="tel" id="setContact"></div>
+                  <div class="form-group"><label>Username</label><input type="text" id="setUsername" placeholder="@username"></div>
+                  <div class="form-group"><label>Bio</label><input type="text" id="setBio" placeholder="About you"></div>
+                  <button class="btn-primary" type="submit">Save</button>
+                  <button class="btn-primary" type="button" style="background:#EF4444; margin-top:10px" onclick="logout()">Logout</button>
+                </form>
+              </div>
+
+              <div class="subpage" id="chatSettings">
+                <div class="list-card">
+                  <div class="list-item" onclick="alert('Wallpaper picker opened')"><span>Wallpaper</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="toggle-item"><span>Chat Animations</span><label class="switch"><input type="checkbox" id="animations" onchange="toggleAnim(this)"><span class="slider"></span></label></div>
+                  <div class="toggle-item"><span>Night Mode</span><label class="switch"><input type="checkbox" id="darkMode" onchange="toggleDark(this)"><span class="slider"></span></label></div>
+                  <div class="list-item" onclick="alert('Font Size: Medium')"><span>Font Size</span><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+              </div>
+
+              <div class="subpage" id="privacySettings">
+                <div class="list-card">
+                  <div class="list-item" onclick="alert('Last Seen: Everyone')"><span>Last Seen</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Profile Photo: Everyone')"><span>Profile Photo</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('About: Everyone')"><span>About</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Status: My Contacts')"><span>Status</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Active Devices: 1 Device')"><span>Devices</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Passkey setup')"><span>Passkey</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="toggle-item"><span>Two-Step Verification</span><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+                  <div class="list-item" onclick="alert('Blocked Users List')"><span>Blocked Users</span><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+              </div>
+
+              <div class="subpage" id="notifSettings">
+                <div class="list-card">
+                  <h3 style="margin-bottom:12px">Messages</h3>
+                  <div class="toggle-item"><span>Message Sounds</span><label class="switch"><input type="checkbox" checked onchange="alert('Message sound toggled')"><span class="slider"></span></label></div>
+                  <div class="toggle-item"><span>Vibrate</span><label class="switch"><input type="checkbox" checked onchange="alert('Vibrate toggled')"><span class="slider"></span></label></div>
+                  <div class="list-item" onclick="alert('Notification Tone Picker')"><span>Notification Tone</span><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+                <div class="list-card">
+                  <h3 style="margin-bottom:12px">Calls</h3>
+                  <div class="toggle-item"><span>Call Notifications</span><label class="switch"><input type="checkbox" checked onchange="alert('Call notifications toggled')"><span class="slider"></span></label></div>
+                  <div class="toggle-item"><span>App Icon Badges</span><label class="switch"><input type="checkbox" checked onchange="alert('App badges toggled')"><span class="slider"></span></label></div>
+                </div>
+              </div>
+
+              <div class="subpage" id="langSettings">
+                <div class="list-card">
+                  <div class="form-group"><label>App Language</label>
+                    <select id="language" onchange="changeLanguage(this.value)">
+                      <option>English</option><option>Chichewa</option><option>French</option><option>Spanish</option>
+                      <option>Portuguese</option><option>German</option><option>Arabic</option><option>Chinese</option><option>Hindi</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="subpage" id="helpSettings">
+                <div class="list-card">
+                  <div class="list-item" onclick="alert('Email: support@mochat.com')"><span>Ask a Question</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Mo Chat: Chat, Call, Files, Groups, Status, Voice Notes')"><span>Mo Chat Features</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('Version 1.0.0')"><span>App Info</span><i class="fa-solid fa-chevron-right"></i></div>
+                  <div class="list-item" onclick="alert('We do not share your data')"><span>Privacy Policy</span><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="profilePage">
+          <h2>Profile</h2>
+          <div class="tabs">
+            <div class="tab active" onclick="showProfileTab('personalDetails', this)">Personal Details</div>
+            <div class="tab" onclick="showProfileTab('accountSettings', this)">Account Settings</div>
+          </div>
+
+          <div class="subpage active" id="personalDetails">
+            <form class="form-card" onsubmit="savePersonal(event)">
+              <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
+              <div class="form-group"><label>Contacts</label><input type="tel" id="contact" required></div>
+              <div class="form-group"><label>Gender</label><select id="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+              <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+              <div class="form-group"><label>Marital Status</label><select id="marital" required><option value="">Select Status</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option></select></div>
+              <div class="form-group"><label>Nationality</label><input type="text" id="nationality" required></div>
+              <button class="btn-primary" type="submit">Save Details</button>
+            </form>
+          </div>
+
+          <div class="subpage" id="accountSettings">
+            <form class="form-card" onsubmit="saveAccount(event)">
+              <div class="profile-photo-wrap"><div class="profile-photo"><i class="fa-solid fa-camera"></i><img id="profilePreview" style="display:none"><input type="file" accept="image/*" onchange="previewPhoto(event)"></div></div>
+              <div class="form-group"><label>Full Name</label><input type="text" id="accFullName"></div>
+              <div class="form-group"><label>Contacts</label><input type="tel" id="accContact"></div>
+              <div class="form-group"><label>Username</label><input type="text" id="username" placeholder="@username"></div>
+              <div class="form-group"><label>Bio</label><input type="text" id="bio" placeholder="About you"></div>
+              <button class="btn-primary" type="submit">Update Account</button>
+            </form>
+            <form class="form-card" onsubmit="changePassword(event)">
+              <h3 style="margin-bottom:12px">Change Password</h3>
+              <div class="form-group"><label>Old Password</label><input type="password" id="oldPass" required></div>
+              <div class="form-group"><label>New Password</label><input type="password" id="newPass" required></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPass" required></div>
+              <button class="btn-primary" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+      <div class="chat-header"><i class="fa-solid fa-arrow-left" onclick="closeChat()"></i><div class="avatar" id="chatAvatar">A</div><div class="info"><div class="name" id="chatName">Contact</div><div class="last">Online</div></div><i class="fa-solid fa-phone" onclick="startCall('audio')"></i><i class="fa-solid fa-video" onclick="startCall('video')"></i></div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input"><input type="text" id="messageInput" placeholder="Type a message" onkeypress="if(event.key==='Enter') sendMessage()"><button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button></div>
+    </div>
+
+    <div class="call-modal" id="callModal"><h2 id="callType">Calling...</h2><div class="avatar" style="width:120px; height:120px; font-size:40px" id="callAvatar">A</div><div class="call-actions"><div class="call-btn end" onclick="endCall()"><i class="fa-solid fa-phone-slash"></i></div></div></div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
